@@ -1,32 +1,36 @@
 steps:
-  # Step 0: Install mysqli (php-mysql) package
+  # Step 0: Install MySQL dan ekstensi PHP di VM
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'compute'
       - 'ssh'
-      - 'rayhan-vm'  # Replace with the name of your Compute Engine VM instance
-      - '--zone=asia-southeast2-a'  # Replace with the zone of your Compute Engine VM instance
+      - 'rayhan-vm'
+      - '--zone=asia-southeast2-a'
       - '--command=sudo apt-get update && sudo apt-get install -y mysql-server php-mysql && sudo systemctl restart apache2'
 
-  # Step 1: Deploy the application to Compute Engine VM
+  # Step 1: Pull kode terbaru dari repo di direktori project
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'compute'
       - 'ssh'
-      - 'rayhan-vm'  # Replace with the name of your Compute Engine VM instance
-      - '--zone=asia-southeast2-a'  # Replace with the zone of your Compute Engine VM instance
+      - 'rayhan-vm'
+      - '--zone=asia-southeast2-a'
       - '--command=cd /var/www/html/contact && git pull origin main'
-    dir: '/var/www/html/contact'  # Specify the directory where your source code is cloned
 
-  # Step 2: Database migration
+  # Step 2: Import data.sql ke database MySQL
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'compute'
       - 'ssh'
-      - 'rayhan-vm'  # Replace with the name of your Compute Engine VM instance
-      - '--zone=asia-southeast2-a'  # Replace with the zone of your Compute Engine VM instance
+      - 'rayhan-vm'
+      - '--zone=asia-southeast2-a'
       - '--command=sudo mysql -u root < /var/www/html/contact/data.sql'
-    dir: '/var/www/html/contact'  # Specify the directory where your source code is cloned
 
-# Optionally, you can specify the timeout for the entire build process
+# Set timeout build
 timeout: '1200s'
+
+# Konfigurasi logging dan service account
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+serviceAccount: projects/kelompok-2-453402/serviceAccounts/rayhanschool20@kelompok-2-453402.iam.gserviceaccount.com
