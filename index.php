@@ -6,8 +6,8 @@ error_reporting(E_ALL);
 
 // Database connection
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "contact-book";
+$password = "C0nt4ct-B00k";
 $dbname = "contacts_db";
 
 // Local dev
